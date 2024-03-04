@@ -1,20 +1,75 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useRef } from 'react';
+import {
+  Animated,
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  SafeAreaView,
+  Easing,
+} from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const App = () => {
+  const fadeInOut = useRef(new Animated.Value(0)).current;
+  const fadeIn = () => {
+    Animated.timing(fadeInOut, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.timing(fadeInOut, {
+      toValue: 0,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  const position = useRef(new Animated.Value(0)).current
+  const position1 = useRef(new Animated.Value(0)).current
+  position1.interpolate({
+  inputRange: [0, 1],
+  outputRange: ["#333333", "#000000"]
 });
+  const moveBottom = () => {
+    Animated.timing(position1, {
+      toValue: position1.interpolate({
+  inputRange: [0, 1],
+  outputRange: ["#333333", "#000000"]
+}),
+      duration: 1000,
+      useNativeDriver: true
+    }).start()
+  }
+
+
+ 
+
+  return (
+    <SafeAreaView>
+      <Animated.View style={ {opacity: fadeInOut, top: position, backgroundColor: position1}}>
+        <View
+          style={{
+            borderColor: 'Orange',
+            borderWidth: 1,
+            margin: 20,
+            backgroundColor: 'red',
+            padding:10
+          }}>
+          <Text style={{ fontSize: 18, alignSelf: 'center' }}>Heeloo</Text>
+        </View>
+      </Animated.View>
+      <View style={{ margin: 20 }}>
+        <Button title="fade in" onPress={fadeIn}></Button>
+        <Button title="fade out" onPress={fadeOut}></Button>
+        <Button title="move loop" onPress={() => {
+          moveBottom()
+          fadeIn()
+        }}></Button> 
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default App;
